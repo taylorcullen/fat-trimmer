@@ -16,8 +16,12 @@ export default async function DashboardPage() {
     where: { id: session.user.id },
     select: {
       heightCm: true,
-      goalWeightKg: true,
     },
+  });
+
+  const activeGoal = await prisma.goal.findFirst({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: "desc" },
   });
 
   const weights = await prisma.weight.findMany({
@@ -35,9 +39,11 @@ export default async function DashboardPage() {
       ? calculateBMI(currentWeight, user.heightCm)
       : null;
 
+  const goalWeight = activeGoal?.targetWeightKg || null;
+
   const progress =
-    startWeight && currentWeight && user?.goalWeightKg
-      ? calculateProgress(currentWeight, startWeight, user.goalWeightKg)
+    startWeight && currentWeight && goalWeight
+      ? calculateProgress(currentWeight, startWeight, goalWeight)
       : 0;
 
   const totalLost = startWeight && currentWeight ? startWeight - currentWeight : 0;
@@ -46,7 +52,7 @@ export default async function DashboardPage() {
     currentWeight,
     previousWeight,
     startWeight,
-    goalWeight: user?.goalWeightKg || null,
+    goalWeight,
     bmi,
     progress,
     totalLost,

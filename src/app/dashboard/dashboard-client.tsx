@@ -189,9 +189,16 @@ export function DashboardClient({ stats, userName }: DashboardClientProps) {
                     {!stats.heightCm && "Add your height to track BMI. "}
                     {!stats.goalWeight && "Set a goal weight to track progress."}
                   </p>
-                  <Link href="/settings" className="text-sm text-primary-400 hover:underline mt-1 inline-block">
-                    Go to settings
-                  </Link>
+                  {!stats.heightCm && (
+                    <Link href="/settings" className="text-sm text-primary-400 hover:underline mt-1 inline-block">
+                      Go to settings
+                    </Link>
+                  )}
+                  {!stats.goalWeight && (
+                    <Link href="/goals" className="text-sm text-primary-400 hover:underline mt-1 inline-block ml-2">
+                      Set a goal
+                    </Link>
+                  )}
                 </div>
               </div>
             </CardContent>

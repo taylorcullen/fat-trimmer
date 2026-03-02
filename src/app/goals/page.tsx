@@ -5,58 +5,73 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatWeight, calculateProgress } from "@/lib/utils";
+import { calculateProgress } from "@/lib/utils";
 import { useUnits } from "@/lib/unit-context";
 import { kgToStoneLbs, stoneLbsToKg } from "@/lib/units";
+import { GoalEntry } from "@/types";
 
-interface GoalData {
-  currentWeight: number | null;
-  startWeight: number | null;
-  goalWeight: number | null;
-  heightCm: number | null;
+interface WeightRecord {
+  weightKg: number;
+  date: string;
 }
 
+type GoalStatus = "active" | "achieved" | "superseded";
+
+function getGoalStatus(
+  goal: GoalEntry,
+  index: number,
+  weights: WeightRecord[]
+): GoalStatus {
+  if (index === 0) return "active";
+
+  const goalDate = new Date(goal.createdAt).getTime();
+  const achieved = weights.some(
+    (w) =>
+      new Date(w.date).getTime() >= goalDate && w.weightKg <= goal.targetWeightKg
+  );
+
+  return achieved ? "achieved" : "superseded";
+}
+
+const statusConfig = {
+  active: { label: "Active", className: "bg-green-500/20 text-green-400 border-green-500/30" },
+  achieved: { label: "Achieved", className: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
+  superseded: { label: "Superseded", className: "bg-slate-500/20 text-slate-400 border-slate-500/30" },
+};
+
 export default function GoalsPage() {
-  const [data, setData] = useState<GoalData>({
-    currentWeight: null,
-    startWeight: null,
-    goalWeight: null,
-    heightCm: null,
-  });
+  const [goals, setGoals] = useState<GoalEntry[]>([]);
+  const [weights, setWeights] = useState<WeightRecord[]>([]);
+  const [currentWeight, setCurrentWeight] = useState<number | null>(null);
+  const [startWeight, setStartWeight] = useState<number | null>(null);
   const { formatWeight: fmtWeight, formatWeightChange: fmtWeightChange, unitSystem } = useUnits();
   const [isLoading, setIsLoading] = useState(true);
   const [goalInput, setGoalInput] = useState("");
   const [goalStone, setGoalStone] = useState("");
   const [goalLbs, setGoalLbs] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
-      const [userRes, weightsRes] = await Promise.all([
-        fetch("/api/user"),
+      const [goalsRes, weightsRes] = await Promise.all([
+        fetch("/api/goals"),
         fetch("/api/weights?limit=100"),
       ]);
 
-      const user = await userRes.json();
-      const { weights } = await weightsRes.json();
+      const { goals: goalsData } = await goalsRes.json();
+      const { weights: weightsData } = await weightsRes.json();
 
-      const sortedWeights = weights.sort(
-        (a: { date: string }, b: { date: string }) =>
+      setGoals(goalsData);
+      setWeights(weightsData);
+
+      const sortedWeights = [...weightsData].sort(
+        (a: WeightRecord, b: WeightRecord) =>
           new Date(a.date).getTime() - new Date(b.date).getTime()
       );
 
-      setData({
-        currentWeight: weights[0]?.weightKg || null,
-        startWeight: sortedWeights[0]?.weightKg || null,
-        goalWeight: user.goalWeightKg,
-        heightCm: user.heightCm,
-      });
-      setGoalInput(user.goalWeightKg?.toString() || "");
-      if (user.goalWeightKg) {
-        const { stone, lbs } = kgToStoneLbs(user.goalWeightKg);
-        setGoalStone(stone.toString());
-        setGoalLbs(Math.round(lbs).toString());
-      }
+      setCurrentWeight(weightsData[0]?.weightKg || null);
+      setStartWeight(sortedWeights[0]?.weightKg || null);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
@@ -68,54 +83,76 @@ export default function GoalsPage() {
     fetchData();
   }, []);
 
-  const handleSaveGoal = async (e: React.FormEvent) => {
+  const handleCreateGoal = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
-    let finalGoalKg: string | null;
+    let targetWeightKg: number;
     if (unitSystem === "imperial") {
-      if (goalStone || goalLbs) {
-        const kg = stoneLbsToKg(parseFloat(goalStone) || 0, parseFloat(goalLbs) || 0);
-        finalGoalKg = kg.toString();
-      } else {
-        finalGoalKg = null;
+      if (!goalStone && !goalLbs) {
+        setIsSaving(false);
+        return;
       }
+      targetWeightKg = stoneLbsToKg(parseFloat(goalStone) || 0, parseFloat(goalLbs) || 0);
     } else {
-      finalGoalKg = goalInput || null;
+      if (!goalInput) {
+        setIsSaving(false);
+        return;
+      }
+      targetWeightKg = parseFloat(goalInput);
     }
 
     try {
-      const response = await fetch("/api/user", {
-        method: "PATCH",
+      const response = await fetch("/api/goals", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goalWeightKg: finalGoalKg }),
+        body: JSON.stringify({ targetWeightKg }),
       });
 
       if (response.ok) {
+        setGoalInput("");
+        setGoalStone("");
+        setGoalLbs("");
         fetchData();
       }
     } catch (error) {
-      console.error("Failed to save goal:", error);
+      console.error("Failed to create goal:", error);
     } finally {
       setIsSaving(false);
     }
   };
 
+  const handleDeleteGoal = async (id: string) => {
+    setDeletingId(id);
+    try {
+      const response = await fetch(`/api/goals/${id}`, { method: "DELETE" });
+      if (response.ok) {
+        fetchData();
+      }
+    } catch (error) {
+      console.error("Failed to delete goal:", error);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const activeGoal = goals[0] || null;
+
   const progress =
-    data.startWeight && data.currentWeight && data.goalWeight
-      ? calculateProgress(data.currentWeight, data.startWeight, data.goalWeight)
+    startWeight && currentWeight && activeGoal
+      ? calculateProgress(currentWeight, startWeight, activeGoal.targetWeightKg)
       : 0;
 
   const weightToLose =
-    data.currentWeight && data.goalWeight
-      ? Math.max(0, data.currentWeight - data.goalWeight)
+    currentWeight && activeGoal
+      ? Math.max(0, currentWeight - activeGoal.targetWeightKg)
       : null;
 
   const totalToLose =
-    data.startWeight && data.goalWeight ? data.startWeight - data.goalWeight : null;
+    startWeight && activeGoal ? startWeight - activeGoal.targetWeightKg : null;
 
   const weightLost =
-    data.startWeight && data.currentWeight ? data.startWeight - data.currentWeight : null;
+    startWeight && currentWeight ? startWeight - currentWeight : null;
 
   if (isLoading) {
     return (
@@ -135,13 +172,13 @@ export default function GoalsPage() {
           <p className="text-slate-400">Set and track your weight loss goals</p>
         </div>
 
-        {/* Goal Setting */}
+        {/* Set New Goal */}
         <Card>
           <CardHeader>
-            <CardTitle>Your Goal</CardTitle>
+            <CardTitle>Set New Goal</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSaveGoal} className="space-y-4">
+            <form onSubmit={handleCreateGoal} className="space-y-4">
               {unitSystem === "imperial" ? (
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1">
@@ -179,14 +216,14 @@ export default function GoalsPage() {
                 />
               )}
               <Button type="submit" className="w-full" isLoading={isSaving}>
-                {data.goalWeight ? "Update Goal" : "Set Goal"}
+                Set New Goal
               </Button>
             </form>
           </CardContent>
         </Card>
 
-        {/* Progress Overview */}
-        {data.goalWeight && data.currentWeight && (
+        {/* Active Goal Progress */}
+        {activeGoal && currentWeight && (
           <>
             <Card>
               <CardHeader>
@@ -213,7 +250,7 @@ export default function GoalsPage() {
                         strokeWidth="12"
                         fill="none"
                         strokeLinecap="round"
-                        strokeDasharray={`${(progress / 100) * 440} 440`}
+                        strokeDasharray={`${(Math.min(progress, 100) / 100) * 440} 440`}
                       />
                       <defs>
                         <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -236,19 +273,19 @@ export default function GoalsPage() {
                   <div>
                     <p className="text-sm text-slate-400">Start</p>
                     <p className="text-lg font-semibold text-white">
-                      {data.startWeight ? fmtWeight(data.startWeight) : "--"}
+                      {startWeight ? fmtWeight(startWeight) : "--"}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-slate-400">Current</p>
                     <p className="text-lg font-semibold text-white">
-                      {fmtWeight(data.currentWeight)}
+                      {fmtWeight(currentWeight)}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-slate-400">Goal</p>
                     <p className="text-lg font-semibold text-green-400">
-                      {fmtWeight(data.goalWeight)}
+                      {fmtWeight(activeGoal.targetWeightKg)}
                     </p>
                   </div>
                 </div>
@@ -294,7 +331,7 @@ export default function GoalsPage() {
                       Congratulations! You&apos;ve reached your goal!
                     </p>
                     <p className="text-slate-300 mt-1">
-                      Amazing work! Consider setting a new goal to maintain your progress.
+                      Amazing work! Consider setting a new goal to keep progressing.
                     </p>
                   </>
                 ) : progress >= 75 ? (
@@ -335,8 +372,8 @@ export default function GoalsPage() {
           </>
         )}
 
-        {/* No Goal Set */}
-        {!data.goalWeight && (
+        {/* No Goals Set */}
+        {goals.length === 0 && (
           <Card className="border-dashed">
             <CardContent className="py-8 text-center">
               <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center mx-auto mb-4">
@@ -345,6 +382,57 @@ export default function GoalsPage() {
                 </svg>
               </div>
               <p className="text-slate-400">Set a goal above to track your progress</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Goal Timeline */}
+        {goals.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Goal Timeline</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {goals.map((goal, index) => {
+                const status = getGoalStatus(goal, index, weights);
+                const config = statusConfig[status];
+                const date = new Date(goal.createdAt);
+
+                return (
+                  <div
+                    key={goal.id}
+                    className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-white">
+                          {fmtWeight(goal.targetWeightKg)}
+                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full border ${config.className}`}>
+                          {config.label}
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-400">
+                        Set {date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteGoal(goal.id)}
+                      disabled={deletingId === goal.id}
+                      className="p-2 text-slate-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                      title="Delete goal"
+                    >
+                      {deletingId === goal.id ? (
+                        <div className="w-4 h-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
             </CardContent>
           </Card>
         )}
