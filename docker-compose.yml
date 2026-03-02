@@ -1,11 +1,51 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: weighttracker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: miniominio
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+
+  minio-setup:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      mc alias set local http://minio:9000 minio 'miniominio';
+      mc mb --ignore-existing local/fat-trimmer;
+      exit 0;
+      "
+
   migrate:
     build:
       context: .
       dockerfile: Dockerfile
     command: ["node_modules/prisma/build/index.js", "db", "push", "--skip-generate"]
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432/weighttracker?schema=public
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/weighttracker?schema=public
+    depends_on:
+      postgres:
+        condition: service_started
 
   app:
     build:
@@ -14,16 +54,22 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432/weighttracker?schema=public
-      - NEXTAUTH_URL=https://unparadoxical-renaldo-plaguily.ngrok-free.dev
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/weighttracker?schema=public
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-your-secret-key-change-in-production}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - S3_ENDPOINT=${S3_ENDPOINT:-http://192.168.88.25:9000}
+      - S3_ENDPOINT=http://minio:9000
       - S3_BUCKET=${S3_BUCKET:-fat-trimmer}
-      - S3_ACCESS_KEY=${S3_ACCESS_KEY:-admin}
-      - S3_SECRET_KEY=${S3_SECRET_KEY:-Password001!}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY:-minio}
+      - S3_SECRET_KEY=${S3_SECRET_KEY:-miniominio}
     depends_on:
       migrate:
         condition: service_completed_successfully
+      minio-setup:
+        condition: service_completed_successfully
     restart: unless-stopped
+
+volumes:
+  postgres_data:
+  minio_data:
