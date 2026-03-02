@@ -30,6 +30,12 @@ export interface PhotoEntry {
   category: "front" | "side" | "back";
 }
 
+export interface GoalEntry {
+  id: string;
+  targetWeightKg: number;
+  createdAt: string;
+}
+
 export interface DashboardStats {
   currentWeight: number | null;
   previousWeight: number | null;

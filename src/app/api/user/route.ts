@@ -41,13 +41,12 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { heightCm, goalWeightKg, unitSystem } = body;
+    const { heightCm, unitSystem } = body;
 
     const user = await prisma.user.update({
       where: { id: session.user.id },
       data: {
         ...(heightCm !== undefined && { heightCm: heightCm ? parseFloat(heightCm) : null }),
-        ...(goalWeightKg !== undefined && { goalWeightKg: goalWeightKg ? parseFloat(goalWeightKg) : null }),
         ...(unitSystem !== undefined && { unitSystem }),
       },
       select: {
@@ -56,7 +55,6 @@ export async function PATCH(request: NextRequest) {
         email: true,
         image: true,
         heightCm: true,
-        goalWeightKg: true,
         unitSystem: true,
       },
     });
