@@ -65,3 +65,5 @@ export function getNavItemsWithIcons(items?: NavItem[]): NavItemWithIcon[] {
     icon: navIcons[item.href],
   }));
 }
+
+export const DASHBOARD_ROUTES = ["/dashboard", "/v1", "/v2", "/v3", "/v4", "/v5", "/v6"];

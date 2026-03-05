@@ -7,6 +7,9 @@ const options: { value: ThemeVersion; label: string }[] = [
   { value: "v1", label: "V1 Classic" },
   { value: "v2", label: "V2 Modern" },
   { value: "v3", label: "V3 Minimal" },
+  { value: "v4", label: "V4 Retro" },
+  { value: "v5", label: "V5 Organic" },
+  { value: "v6", label: "V6 Brutalist" },
 ];
 
 export function VersionSelector({ className = "" }: { className?: string }) {

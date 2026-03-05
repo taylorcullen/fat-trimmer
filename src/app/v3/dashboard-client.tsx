@@ -24,122 +24,172 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
 
   return (
     <V3Shell>
-      <div className="space-y-16">
-        {/* Version switcher */}
+      <div className="space-y-20">
+        {/* Version switcher — flush right, near-invisible */}
         <div className="flex justify-end">
-          <VersionSelector className="bg-transparent border-white/5 text-white/20 rounded-none" />
+          <VersionSelector className="bg-transparent border-0 text-white/10 rounded-none text-xs tracking-widest" />
         </div>
 
-        {/* Hero stat */}
-        <div>
-          <p className="text-white/20 text-sm tracking-widest uppercase">current weight</p>
-          <p className="text-6xl font-bold text-white mt-2 tracking-tight">
-            {stats.currentWeight ? fmtWeight(stats.currentWeight) : "--"}
+        {/* Hero weight — massive editorial typography */}
+        <section>
+          <p className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">
+            current weight
+          </p>
+          <p className="text-[clamp(4rem,12vw,8rem)] font-extralight text-white leading-none mt-3 tracking-tighter">
+            {stats.currentWeight ? fmtWeight(stats.currentWeight) : "\u2014"}
           </p>
           {weightChange && (
-            <p className={`text-lg mt-2 ${weightChange.isLoss ? "text-emerald-500" : "text-[#f43f5e]"}`}>
-              {weightChange.isLoss ? "-" : "+"}{fmtWeightChange(weightChange.value)} from last entry
+            <p className={`text-base font-light mt-4 tracking-wide ${
+              weightChange.isLoss ? "text-white/40" : "text-[#f43f5e]"
+            }`}>
+              {weightChange.isLoss ? "\u2212" : "+"}
+              {fmtWeightChange(weightChange.value)}
+              <span className="text-white/15 ml-2">from last entry</span>
             </p>
           )}
-        </div>
+        </section>
 
-        {/* Stats - minimal divider style */}
-        <div className="space-y-0">
-          <div className="flex justify-between items-baseline py-5 border-t border-white/5">
-            <span className="text-white/20 text-sm">BMI</span>
-            <div className="text-right">
-              <span className="text-xl font-medium text-white">
-                {stats.bmi ? formatWeight(stats.bmi) : "--"}
+        {/* Stats — elegant typographic rows, no cards, just hairlines */}
+        <section>
+          <div className="h-px bg-white/[0.04]" />
+
+          <div className="flex justify-between items-baseline py-6">
+            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">bmi</span>
+            <div className="text-right flex items-baseline gap-4">
+              <span className="text-2xl font-extralight text-white tracking-tight">
+                {stats.bmi ? formatWeight(stats.bmi) : "\u2014"}
               </span>
               {bmiCategory && (
-                <span className={`text-sm ml-3 ${bmiCategory.color}`}>{bmiCategory.label}</span>
+                <span className="text-[11px] tracking-[0.2em] uppercase text-white/25">{bmiCategory.label}</span>
               )}
             </div>
           </div>
 
-          <div className="flex justify-between items-baseline py-5 border-t border-white/5">
-            <span className="text-white/20 text-sm">goal</span>
-            <div className="text-right">
-              <span className="text-xl font-medium text-white">
-                {stats.goalWeight ? fmtWeight(stats.goalWeight) : "--"}
+          <div className="h-px bg-white/[0.04]" />
+
+          <div className="flex justify-between items-baseline py-6">
+            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">goal</span>
+            <div className="text-right flex items-baseline gap-4">
+              <span className="text-2xl font-extralight text-white tracking-tight">
+                {stats.goalWeight ? fmtWeight(stats.goalWeight) : "\u2014"}
               </span>
               {stats.goalWeight && (
-                <span className="text-sm text-white/20 ml-3">{Math.round(stats.progress)}%</span>
+                <span className="text-[11px] tracking-[0.2em] text-[#f43f5e]">
+                  {Math.round(stats.progress)}%
+                </span>
               )}
             </div>
           </div>
 
-          <div className="flex justify-between items-baseline py-5 border-t border-white/5">
-            <span className="text-white/20 text-sm">total lost</span>
-            <span className={`text-xl font-medium ${stats.totalLost > 0 ? "text-emerald-500" : "text-white"}`}>
-              {stats.totalLost > 0 ? fmtWeightChange(stats.totalLost) : "--"}
+          <div className="h-px bg-white/[0.04]" />
+
+          <div className="flex justify-between items-baseline py-6">
+            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">total lost</span>
+            <span className={`text-2xl font-extralight tracking-tight ${
+              stats.totalLost > 0 ? "text-white" : "text-white/20"
+            }`}>
+              {stats.totalLost > 0 ? fmtWeightChange(stats.totalLost) : "\u2014"}
             </span>
           </div>
 
-          <div className="flex justify-between items-baseline py-5 border-t border-white/5 border-b border-b-white/5">
-            <span className="text-white/20 text-sm">started at</span>
-            <span className="text-xl font-medium text-white">
-              {stats.startWeight ? fmtWeight(stats.startWeight) : "--"}
+          <div className="h-px bg-white/[0.04]" />
+
+          <div className="flex justify-between items-baseline py-6">
+            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">started at</span>
+            <span className="text-2xl font-extralight text-white tracking-tight">
+              {stats.startWeight ? fmtWeight(stats.startWeight) : "\u2014"}
             </span>
           </div>
-        </div>
 
-        {/* Progress - thin line */}
+          <div className="h-px bg-white/[0.04]" />
+        </section>
+
+        {/* Progress — a single thin rose line on void */}
         {stats.goalWeight && stats.currentWeight && (
-          <div>
-            <div className="flex justify-between mb-3">
-              <span className="text-white/20 text-sm">progress</span>
-              <span className="text-sm text-white/40">
-                {fmtWeight(stats.currentWeight)} / {fmtWeight(stats.goalWeight)}
+          <section>
+            <div className="flex justify-between items-baseline mb-6">
+              <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">progress</span>
+              <span className="text-[11px] tracking-[0.15em] text-white/20 font-light">
+                {fmtWeight(stats.currentWeight)}
+                <span className="text-white/10 mx-2">/</span>
+                {fmtWeight(stats.goalWeight)}
               </span>
             </div>
-            <div className="h-px bg-white/5 relative">
+            <div className="h-px bg-white/[0.04] relative">
               <div
-                className="h-px bg-[#f43f5e] absolute top-0 left-0 transition-all duration-1000"
+                className="h-px bg-[#f43f5e] absolute top-0 left-0 transition-all duration-[1.5s] ease-out"
                 style={{ width: `${Math.min(stats.progress, 100)}%` }}
               />
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Weight Chart */}
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <span className="text-white/20 text-sm tracking-widest uppercase">trend</span>
-            <Link href="/history" className="text-sm text-[#f43f5e] hover:underline underline-offset-4">
+        {/* Trend chart — minimal label above */}
+        <section>
+          <div className="flex items-baseline justify-between mb-8">
+            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">trend</span>
+            <Link
+              href="/history"
+              className="text-[11px] tracking-[0.2em] uppercase text-[#f43f5e] hover:text-[#f43f5e]/70 transition-colors"
+            >
               view all
             </Link>
           </div>
           <WeightChart
             data={stats.recentWeights}
             goalWeight={stats.goalWeight}
-            height={200}
+            height={180}
             unitSystem={unitSystem}
           />
-        </div>
+        </section>
 
-        {/* Actions - simple text links */}
-        <div className="flex gap-8">
-          <Link href="/log" className="text-[#f43f5e] hover:underline underline-offset-4 text-sm">
+        {/* Actions — text-only, editorial spacing */}
+        <section className="flex gap-10">
+          <Link
+            href="/log"
+            className="text-[11px] tracking-[0.3em] uppercase text-[#f43f5e] hover:text-[#f43f5e]/70 transition-colors"
+          >
             log weight
           </Link>
-          <Link href="/photos" className="text-white/30 hover:text-white/60 hover:underline underline-offset-4 text-sm">
+          <Link
+            href="/photos"
+            className="text-[11px] tracking-[0.3em] uppercase text-white/20 hover:text-white/40 transition-colors"
+          >
             progress photo
           </Link>
-        </div>
+        </section>
 
-        {/* Setup prompt */}
+        {/* Setup prompts — whisper-quiet, separated by hairline */}
         {(!stats.heightCm || !stats.goalWeight) && (
-          <div className="border-t border-white/5 pt-8">
-            <p className="text-white/20 text-sm">
+          <section className="pt-10">
+            <div className="h-px bg-white/[0.04] mb-10" />
+            <p className="text-white/15 text-[13px] font-light leading-relaxed">
               {!stats.heightCm && (
-                <>add your height in <Link href="/settings" className="text-[#f43f5e] hover:underline underline-offset-4">settings</Link> to track BMI. </>
+                <>
+                  Add your height in{" "}
+                  <Link
+                    href="/settings"
+                    className="text-[#f43f5e] hover:text-[#f43f5e]/70 transition-colors"
+                  >
+                    settings
+                  </Link>{" "}
+                  to track BMI.{" "}
+                </>
               )}
               {!stats.goalWeight && (
-                <>set a <Link href="/goals" className="text-[#f43f5e] hover:underline underline-offset-4">goal</Link> to track progress.</>
+                <>
+                  Set a{" "}
+                  <Link
+                    href="/goals"
+                    className="text-[#f43f5e] hover:text-[#f43f5e]/70 transition-colors"
+                  >
+                    goal
+                  </Link>{" "}
+                  to track progress.
+                </>
               )}
             </p>
-          </div>
+          </section>
         )}
       </div>
     </V3Shell>

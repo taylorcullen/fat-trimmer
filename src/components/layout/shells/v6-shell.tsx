@@ -7,30 +7,26 @@ import { useTheme } from "@/lib/theme-context";
 import Image from "next/image";
 import { navItems, DASHBOARD_ROUTES } from "@/lib/nav-items";
 
-export function V1Shell({ children }: { children: React.ReactNode }) {
+export function V6Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { dashboardPath } = useTheme();
 
   return (
-    <div className="min-h-screen bg-[#0b0e1a]">
-      {/* Decorative top edge — brass accent line */}
-      <div className="h-[3px] bg-gradient-to-r from-transparent via-[#f0a500] to-transparent" />
+    <div className="min-h-screen bg-[#f5f5f0]">
+      {/* Thick black top bar */}
+      <div className="h-2 bg-black" />
 
-      <header className="bg-[#0f1420] border-b-2 border-[#f0a500]/20 sticky top-0 z-30">
+      <header className="bg-[#ffdb58] border-b-4 border-black sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            {/* Logo with art deco diamond */}
+            {/* Logo -- blocky brutalist type */}
             <div className="flex items-center gap-10">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-[#f0a500] rotate-45" />
-                <h1 className="text-lg font-bold uppercase tracking-[0.25em] text-[#f0a500] font-mono">
-                  Fat Trimmer
-                </h1>
-                <div className="w-3 h-3 bg-[#f0a500] rotate-45" />
-              </div>
+              <h1 className="text-xl font-black uppercase tracking-wider text-black">
+                FAT TRIMMER
+              </h1>
 
-              {/* Desktop nav — angular art deco tabs */}
+              {/* Desktop nav -- thick bordered tabs */}
               <nav aria-label="Main navigation" className="hidden md:flex items-center gap-0">
                 {navItems.map((item) => {
                   const href = item.isDashboard ? dashboardPath : item.href;
@@ -43,12 +39,13 @@ export function V1Shell({ children }: { children: React.ReactNode }) {
                       href={href}
                       aria-current={isActive ? "page" : undefined}
                       className={`
-                        relative px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] font-mono
-                        transition-all duration-200 border-b-2
+                        px-5 py-2 text-xs font-black uppercase tracking-widest
+                        border-2 border-black -ml-[2px] first:ml-0
+                        transition-colors duration-100
                         ${
                           isActive
-                            ? "text-[#f0a500] border-[#f0a500] bg-[#f0a500]/10"
-                            : "text-[#6b7394] border-transparent hover:text-[#c4985a] hover:border-[#c4985a]/40"
+                            ? "bg-black text-[#ffdb58]"
+                            : "bg-[#ffdb58] text-black hover:bg-black hover:text-[#ffdb58]"
                         }
                       `}
                     >
@@ -59,26 +56,25 @@ export function V1Shell({ children }: { children: React.ReactNode }) {
               </nav>
             </div>
 
-            {/* User avatar with brass ring */}
+            {/* User avatar with thick black border */}
             {session?.user?.image && (
-              <div className="relative">
-                <div className="absolute -inset-[3px] border-2 border-[#f0a500]/40 rounded-full" />
+              <div className="border-2 border-black shadow-[3px_3px_0_0_black]">
                 <Image
                   src={session.user.image}
                   alt={session.user.name || "User"}
-                  width={34}
-                  height={34}
-                  className="rounded-full"
+                  width={36}
+                  height={36}
+                  className="block"
                 />
               </div>
             )}
           </div>
         </div>
 
-        {/* Mobile nav — scrollable brass-accented bar */}
+        {/* Mobile nav -- scrollable chunky bar */}
         <nav
           aria-label="Main navigation"
-          className="md:hidden flex overflow-x-auto px-4 pb-3 pt-1 gap-1 scrollbar-none"
+          className="md:hidden flex overflow-x-auto px-4 pb-3 pt-1 gap-2 scrollbar-none"
         >
           {navItems.slice(0, 5).map((item) => {
             const href = item.isDashboard ? dashboardPath : item.href;
@@ -91,12 +87,13 @@ export function V1Shell({ children }: { children: React.ReactNode }) {
                 href={href}
                 aria-current={isActive ? "page" : undefined}
                 className={`
-                  px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] font-mono
-                  whitespace-nowrap transition-all border border-[#f0a500]/20
+                  px-4 py-1.5 text-[10px] font-black uppercase tracking-widest
+                  whitespace-nowrap border-2 border-black
+                  transition-colors duration-100
                   ${
                     isActive
-                      ? "bg-[#f0a500] text-[#0b0e1a] border-[#f0a500]"
-                      : "text-[#6b7394] hover:text-[#f0a500] hover:border-[#f0a500]/40"
+                      ? "bg-black text-[#ffdb58]"
+                      : "bg-[#ffdb58] text-black hover:bg-black hover:text-[#ffdb58]"
                   }
                 `}
               >
@@ -107,13 +104,13 @@ export function V1Shell({ children }: { children: React.ReactNode }) {
         </nav>
       </header>
 
-      {/* Main content area with subtle geometric background pattern */}
-      <main className="max-w-5xl mx-auto px-4 py-6 md:px-8 md:py-10">
+      {/* Main content -- off-white canvas */}
+      <main className="max-w-5xl mx-auto px-4 py-8 md:px-8 md:py-12">
         {children}
       </main>
 
-      {/* Bottom brass accent line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#f0a500]/20 to-transparent" />
+      {/* Bottom black bar */}
+      <div className="h-2 bg-black" />
     </div>
   );
 }
