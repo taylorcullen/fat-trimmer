@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-context";
 import { getThemeStyles } from "@/lib/theme-styles";
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useEffect } from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -17,6 +17,15 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
   const { theme } = useTheme();
   const styles = getThemeStyles(theme);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -27,6 +36,9 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
       />
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
           className={cn(
             "rounded-xl border shadow-2xl w-full max-w-md max-h-[90vh] overflow-auto",
             styles.modal,

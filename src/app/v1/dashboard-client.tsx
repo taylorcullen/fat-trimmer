@@ -1,29 +1,15 @@
 "use client";
 
-import { V1Layout } from "./v1-layout";
+import { V1Shell } from "@/components/layout/shells/v1-shell";
 import { WeightChart } from "@/components/charts/weight-chart";
 import { formatWeight, getBMICategory, getWeightChange } from "@/lib/utils";
 import { useUnits } from "@/lib/unit-context";
 import { VersionSelector } from "@/components/ui/version-selector";
+import { DashboardStats } from "@/types";
 import Link from "next/link";
 
 interface V1DashboardClientProps {
-  stats: {
-    currentWeight: number | null;
-    previousWeight: number | null;
-    startWeight: number | null;
-    goalWeight: number | null;
-    bmi: number | null;
-    progress: number;
-    totalLost: number;
-    heightCm: number | null;
-    recentWeights: Array<{
-      id: string;
-      weightKg: number;
-      date: Date;
-      notes: string | null;
-    }>;
-  };
+  stats: DashboardStats;
   userName: string;
 }
 
@@ -37,7 +23,7 @@ export function V1DashboardClient({ stats, userName }: V1DashboardClientProps) {
   const bmiCategory = stats.bmi ? getBMICategory(stats.bmi) : null;
 
   return (
-    <V1Layout>
+    <V1Shell>
       <div className="space-y-6">
         <div className="flex items-start justify-between border-b border-[#2a2a4a] pb-4">
           <div>
@@ -173,6 +159,6 @@ export function V1DashboardClient({ stats, userName }: V1DashboardClientProps) {
           </div>
         )}
       </div>
-    </V1Layout>
+    </V1Shell>
   );
 }

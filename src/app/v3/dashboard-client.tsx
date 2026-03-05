@@ -1,29 +1,15 @@
 "use client";
 
-import { V3Layout } from "./v3-layout";
+import { V3Shell } from "@/components/layout/shells/v3-shell";
 import { WeightChart } from "@/components/charts/weight-chart";
 import { formatWeight, getBMICategory, getWeightChange } from "@/lib/utils";
 import { useUnits } from "@/lib/unit-context";
 import { VersionSelector } from "@/components/ui/version-selector";
+import { DashboardStats } from "@/types";
 import Link from "next/link";
 
 interface V3DashboardClientProps {
-  stats: {
-    currentWeight: number | null;
-    previousWeight: number | null;
-    startWeight: number | null;
-    goalWeight: number | null;
-    bmi: number | null;
-    progress: number;
-    totalLost: number;
-    heightCm: number | null;
-    recentWeights: Array<{
-      id: string;
-      weightKg: number;
-      date: Date;
-      notes: string | null;
-    }>;
-  };
+  stats: DashboardStats;
   userName: string;
 }
 
@@ -37,7 +23,7 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
   const bmiCategory = stats.bmi ? getBMICategory(stats.bmi) : null;
 
   return (
-    <V3Layout>
+    <V3Shell>
       <div className="space-y-16">
         {/* Version switcher */}
         <div className="flex justify-end">
@@ -156,6 +142,6 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
           </div>
         )}
       </div>
-    </V3Layout>
+    </V3Shell>
   );
 }

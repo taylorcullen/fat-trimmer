@@ -44,5 +44,6 @@ export interface DashboardStats {
   bmi: number | null;
   progress: number;
   totalLost: number;
+  heightCm: number | null;
   recentWeights: WeightEntry[];
 }

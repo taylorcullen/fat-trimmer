@@ -5,16 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "@/lib/theme-context";
 import Image from "next/image";
-
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", isDashboard: true },
-  { href: "/log", label: "Log Weight" },
-  { href: "/history", label: "History" },
-  { href: "/goals", label: "Goals" },
-  { href: "/measurements", label: "Body" },
-  { href: "/photos", label: "Photos" },
-  { href: "/settings", label: "Settings" },
-];
+import { navItems } from "@/lib/nav-items";
 
 export function V1Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,7 +19,7 @@ export function V1Shell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-8">
               <h1 className="text-lg font-bold text-[#f0a500]">Fat Trimmer</h1>
-              <nav className="hidden md:flex items-center gap-1">
+              <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1">
                 {navItems.map((item) => {
                   const href = item.isDashboard ? dashboardPath : item.href;
                   const isActive = item.isDashboard
@@ -38,6 +29,7 @@ export function V1Shell({ children }: { children: React.ReactNode }) {
                     <Link
                       key={item.href}
                       href={href}
+                      aria-current={isActive ? "page" : undefined}
                       className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
                         isActive
                           ? "bg-[#f0a500] text-[#16213e]"
@@ -61,7 +53,7 @@ export function V1Shell({ children }: { children: React.ReactNode }) {
             )}
           </div>
         </div>
-        <nav className="md:hidden flex overflow-x-auto px-4 pb-2 gap-1">
+        <nav aria-label="Main navigation" className="md:hidden flex overflow-x-auto px-4 pb-2 gap-1">
           {navItems.slice(0, 5).map((item) => {
             const href = item.isDashboard ? dashboardPath : item.href;
             const isActive = item.isDashboard
@@ -71,6 +63,7 @@ export function V1Shell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={href}
+                aria-current={isActive ? "page" : undefined}
                 className={`px-3 py-1.5 text-xs font-medium rounded whitespace-nowrap transition-colors ${
                   isActive
                     ? "bg-[#f0a500] text-[#16213e]"

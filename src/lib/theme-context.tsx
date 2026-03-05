@@ -5,6 +5,12 @@ import { useRouter, usePathname } from "next/navigation";
 
 export type ThemeVersion = "default" | "v1" | "v2" | "v3";
 
+const VALID_THEMES: ThemeVersion[] = ["default", "v1", "v2", "v3"];
+
+function isValidTheme(value: unknown): value is ThemeVersion {
+  return typeof value === "string" && VALID_THEMES.includes(value as ThemeVersion);
+}
+
 const DASHBOARD_PATHS: Record<ThemeVersion, string> = {
   default: "/dashboard",
   v1: "/v1",
@@ -25,13 +31,19 @@ const ThemeContext = createContext<ThemeContextValue>({
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeVersion>("default");
+  const [theme, setThemeState] = useState<ThemeVersion>(() => {
+    if (typeof window !== "undefined") {
+      const attr = document.documentElement.getAttribute("data-theme");
+      if (isValidTheme(attr)) return attr;
+    }
+    return "default";
+  });
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    const stored = localStorage.getItem("fat-trimmer-theme") as ThemeVersion | null;
-    if (stored && DASHBOARD_PATHS[stored]) {
+    const stored = localStorage.getItem("fat-trimmer-theme");
+    if (isValidTheme(stored)) {
       setThemeState(stored);
     }
   }, []);

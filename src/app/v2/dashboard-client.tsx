@@ -1,33 +1,23 @@
 "use client";
 
-import { V2Layout } from "./v2-layout";
+import { useState } from "react";
+import { V2Shell } from "@/components/layout/shells/v2-shell";
 import { WeightChart } from "@/components/charts/weight-chart";
 import { formatWeight, getBMICategory, getWeightChange } from "@/lib/utils";
 import { useUnits } from "@/lib/unit-context";
 import { VersionSelector } from "@/components/ui/version-selector";
+import { DashboardStats } from "@/types";
 import Link from "next/link";
 
 interface V2DashboardClientProps {
-  stats: {
-    currentWeight: number | null;
-    previousWeight: number | null;
-    startWeight: number | null;
-    goalWeight: number | null;
-    bmi: number | null;
-    progress: number;
-    totalLost: number;
-    heightCm: number | null;
-    recentWeights: Array<{
-      id: string;
-      weightKg: number;
-      date: Date;
-      notes: string | null;
-    }>;
-  };
+  stats: DashboardStats;
   userName: string;
 }
 
+let progressRingCounter = 0;
+
 function ProgressRing({ progress, size = 80, strokeWidth = 6 }: { progress: number; size?: number; strokeWidth?: number }) {
+  const [gradientId] = useState(() => `progress-ring-gradient-${++progressRingCounter}`);
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (Math.min(progress, 100) / 100) * circumference;
@@ -46,7 +36,7 @@ function ProgressRing({ progress, size = 80, strokeWidth = 6 }: { progress: numb
         cx={size / 2}
         cy={size / 2}
         r={radius}
-        stroke="url(#tealGradient)"
+        stroke={`url(#${gradientId})`}
         strokeWidth={strokeWidth}
         fill="none"
         strokeLinecap="round"
@@ -55,7 +45,7 @@ function ProgressRing({ progress, size = 80, strokeWidth = 6 }: { progress: numb
         className="transition-all duration-1000 ease-out"
       />
       <defs>
-        <linearGradient id="tealGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#14b8a6" />
           <stop offset="100%" stopColor="#06b6d4" />
         </linearGradient>
@@ -74,7 +64,7 @@ export function V2DashboardClient({ stats, userName }: V2DashboardClientProps) {
   const bmiCategory = stats.bmi ? getBMICategory(stats.bmi) : null;
 
   return (
-    <V2Layout>
+    <V2Shell>
       <div className="space-y-8">
         <div className="flex items-start justify-between">
           <div>
@@ -228,6 +218,6 @@ export function V2DashboardClient({ stats, userName }: V2DashboardClientProps) {
           </div>
         )}
       </div>
-    </V2Layout>
+    </V2Shell>
   );
 }

@@ -16,6 +16,7 @@ export function VersionSelector({ className = "" }: { className?: string }) {
     <select
       value={theme}
       onChange={(e) => setTheme(e.target.value as ThemeVersion)}
+      aria-label="Select theme version"
       className={`bg-slate-700 border border-slate-600 text-slate-300 text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary-500 cursor-pointer ${className}`}
     >
       {options.map((opt) => (

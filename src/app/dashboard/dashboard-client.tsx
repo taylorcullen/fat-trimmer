@@ -6,25 +6,11 @@ import { WeightChart } from "@/components/charts/weight-chart";
 import { formatWeight, getBMICategory, getWeightChange } from "@/lib/utils";
 import { useUnits } from "@/lib/unit-context";
 import { VersionSelector } from "@/components/ui/version-selector";
+import { DashboardStats } from "@/types";
 import Link from "next/link";
 
 interface DashboardClientProps {
-  stats: {
-    currentWeight: number | null;
-    previousWeight: number | null;
-    startWeight: number | null;
-    goalWeight: number | null;
-    bmi: number | null;
-    progress: number;
-    totalLost: number;
-    heightCm: number | null;
-    recentWeights: Array<{
-      id: string;
-      weightKg: number;
-      date: Date;
-      notes: string | null;
-    }>;
-  };
+  stats: DashboardStats;
   userName: string;
 }
 

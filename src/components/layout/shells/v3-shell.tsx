@@ -3,16 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/lib/theme-context";
-
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", isDashboard: true },
-  { href: "/log", label: "Log" },
-  { href: "/history", label: "History" },
-  { href: "/goals", label: "Goals" },
-  { href: "/measurements", label: "Body" },
-  { href: "/photos", label: "Photos" },
-  { href: "/settings", label: "Settings" },
-];
+import { navItems } from "@/lib/nav-items";
 
 export function V3Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,7 +14,7 @@ export function V3Shell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-white/5 sticky top-0 z-30 bg-[#09090b]">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href={dashboardPath} className="text-sm font-medium text-white/90">fat trimmer</Link>
-          <nav className="hidden md:flex items-center gap-6">
+          <nav aria-label="Main navigation" className="hidden md:flex items-center gap-6">
             {navItems.map((item) => {
               const href = item.isDashboard ? dashboardPath : item.href;
               const isActive = item.isDashboard
@@ -33,6 +24,7 @@ export function V3Shell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={href}
+                  aria-current={isActive ? "page" : undefined}
                   className={`text-sm transition-colors ${
                     isActive
                       ? "text-[#f43f5e]"
@@ -45,7 +37,7 @@ export function V3Shell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
         </div>
-        <nav className="md:hidden flex overflow-x-auto px-6 pb-3 gap-5">
+        <nav aria-label="Main navigation" className="md:hidden flex overflow-x-auto px-6 pb-3 gap-5">
           {navItems.slice(0, 5).map((item) => {
             const href = item.isDashboard ? dashboardPath : item.href;
             const isActive = item.isDashboard
@@ -55,6 +47,7 @@ export function V3Shell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={href}
+                aria-current={isActive ? "page" : undefined}
                 className={`text-xs whitespace-nowrap transition-colors ${
                   isActive ? "text-[#f43f5e]" : "text-white/30"
                 }`}

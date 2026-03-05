@@ -24,6 +24,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          try {
+            var t = localStorage.getItem('fat-trimmer-theme');
+            if (t && ['default','v1','v2','v3'].includes(t)) {
+              document.documentElement.setAttribute('data-theme', t);
+            }
+          } catch(e) {}
+        ` }} />
+      </head>
       <body className={inter.className}>
         <Providers>{children}</Providers>
       </body>
