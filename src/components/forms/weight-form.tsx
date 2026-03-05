@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUnits } from "@/lib/unit-context";
 import { stoneLbsToKg, kgToStoneLbs } from "@/lib/units";
+import { useTheme } from "@/lib/theme-context";
+import { getThemeStyles } from "@/lib/theme-styles";
 
 interface WeightFormProps {
   onSubmit: (data: { weightKg: number; date: string; notes: string }) => Promise<void>;
@@ -22,6 +24,8 @@ export function WeightForm({
   submitLabel = "Log Weight",
 }: WeightFormProps) {
   const { unitSystem } = useUnits();
+  const { theme } = useTheme();
+  const styles = getThemeStyles(theme);
 
   // Metric state
   const [weightKg, setWeightKg] = useState(initialValues?.weightKg?.toString() || "");
@@ -134,13 +138,13 @@ export function WeightForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">
+        <label className={`block text-sm font-medium ${styles.inputLabel} mb-1`}>
           Notes (optional)
         </label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-none"
+          className={`w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 resize-none ${styles.input}`}
           rows={2}
           placeholder="Any notes about today..."
         />

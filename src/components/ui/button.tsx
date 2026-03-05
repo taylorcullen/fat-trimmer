@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/lib/theme-context";
+import { getThemeStyles } from "@/lib/theme-styles";
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -11,12 +13,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", isLoading, children, disabled, ...props }, ref) => {
+    const { theme } = useTheme();
+    const styles = getThemeStyles(theme);
+
     const baseStyles = "font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
     const variants = {
-      primary: "bg-gradient-primary hover:opacity-90 text-white shadow-md hover:shadow-lg",
-      secondary: "bg-slate-700 hover:bg-slate-600 text-white border border-slate-600",
-      ghost: "bg-transparent hover:bg-slate-700 text-slate-300",
+      primary: styles.btnPrimary,
+      secondary: styles.btnSecondary,
+      ghost: theme === "v3" ? "bg-transparent text-white/30 hover:text-white/60" : "bg-transparent hover:bg-slate-700 text-slate-300",
       danger: "bg-red-600 hover:bg-red-700 text-white",
     };
 

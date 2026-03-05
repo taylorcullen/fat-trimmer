@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/lib/theme-context";
 
 const navItems = [
   {
@@ -65,16 +66,18 @@ const mobileNavItems = navItems.slice(0, 5);
 
 export function MobileNav() {
   const pathname = usePathname();
+  const { dashboardPath } = useTheme();
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 z-30 pb-safe">
       <div className="flex justify-around items-center h-16">
         {mobileNavItems.map((item) => {
-          const isActive = pathname === item.href;
+          const href = item.href === "/dashboard" ? dashboardPath : item.href;
+          const isActive = pathname === href || (item.href === "/dashboard" && ["/dashboard", "/v1", "/v2", "/v3"].includes(pathname));
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={href}
               className={cn(
                 "flex flex-col items-center justify-center w-full h-full transition-colors",
                 isActive
@@ -94,6 +97,7 @@ export function MobileNav() {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { dashboardPath } = useTheme();
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-slate-900 border-r border-slate-700 h-screen fixed left-0 top-0">
@@ -104,11 +108,12 @@ export function Sidebar() {
 
       <nav className="flex-1 px-4 space-y-1">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const href = item.href === "/dashboard" ? dashboardPath : item.href;
+          const isActive = pathname === href || (item.href === "/dashboard" && ["/dashboard", "/v1", "/v2", "/v3"].includes(pathname));
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={href}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
                 isActive

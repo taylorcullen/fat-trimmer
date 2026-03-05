@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WeightChart } from "@/components/charts/weight-chart";
 import { formatWeight, getBMICategory, getWeightChange } from "@/lib/utils";
 import { useUnits } from "@/lib/unit-context";
+import { VersionSelector } from "@/components/ui/version-selector";
 import Link from "next/link";
 
 interface DashboardClientProps {
@@ -39,11 +40,14 @@ export function DashboardClient({ stats, userName }: DashboardClientProps) {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-white">
-            Welcome back, {userName.split(" ")[0]}
-          </h1>
-          <p className="text-slate-400">Here&apos;s your progress overview</p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-white">
+              Welcome back, {userName.split(" ")[0]}
+            </h1>
+            <p className="text-slate-400">Here&apos;s your progress overview</p>
+          </div>
+          <VersionSelector />
         </div>
 
         {/* Quick Stats */}

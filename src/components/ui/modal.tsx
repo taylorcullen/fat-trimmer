@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/lib/theme-context";
+import { getThemeStyles } from "@/lib/theme-styles";
 import { Fragment, ReactNode } from "react";
 
 interface ModalProps {
@@ -12,6 +14,9 @@ interface ModalProps {
 }
 
 export function Modal({ isOpen, onClose, children, title, className }: ModalProps) {
+  const { theme } = useTheme();
+  const styles = getThemeStyles(theme);
+
   if (!isOpen) return null;
 
   return (
@@ -23,17 +28,18 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
           className={cn(
-            "bg-slate-800 rounded-xl border border-slate-700 shadow-2xl w-full max-w-md max-h-[90vh] overflow-auto",
+            "rounded-xl border shadow-2xl w-full max-w-md max-h-[90vh] overflow-auto",
+            styles.modal,
             className
           )}
           onClick={(e) => e.stopPropagation()}
         >
           {title && (
-            <div className="flex items-center justify-between p-4 border-b border-slate-700">
-              <h2 className="text-lg font-semibold text-white">{title}</h2>
+            <div className={cn("flex items-center justify-between p-4 border-b", styles.modalHeader)}>
+              <h2 className={cn("text-lg font-semibold", styles.text)}>{title}</h2>
               <button
                 onClick={onClose}
-                className="text-slate-400 hover:text-white transition-colors"
+                className={cn("transition-colors", styles.mutedText, "hover:text-white")}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

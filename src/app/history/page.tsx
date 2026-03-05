@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { WeightChart } from "@/components/charts/weight-chart";
 import { formatDate, formatWeight } from "@/lib/utils";
 import { useUnits } from "@/lib/unit-context";
+import { useTheme } from "@/lib/theme-context";
+import { getThemeStyles } from "@/lib/theme-styles";
 
 interface WeightEntry {
   id: string;
@@ -17,6 +19,8 @@ interface WeightEntry {
 
 export default function HistoryPage() {
   const { formatWeight: fmtWeight, formatWeightChange: fmtWeightChange, unitSystem } = useUnits();
+  const { theme } = useTheme();
+  const styles = getThemeStyles(theme);
   const [weights, setWeights] = useState<WeightEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,8 +64,8 @@ export default function HistoryPage() {
     <AppLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Weight History</h1>
-          <p className="text-slate-400">View and manage your weight entries</p>
+          <h1 className={`text-2xl font-bold ${styles.heading}`}>Weight History</h1>
+          <p className={styles.subtext}>View and manage your weight entries</p>
         </div>
 
         {/* Chart */}
@@ -79,7 +83,7 @@ export default function HistoryPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>All Entries</CardTitle>
-              <span className="text-sm text-slate-400">{total} total</span>
+              <span className={`text-sm ${styles.mutedText}`}>{total} total</span>
             </div>
           </CardHeader>
           <CardContent>
@@ -89,7 +93,7 @@ export default function HistoryPage() {
               </div>
             ) : weights.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-slate-400">No weight entries yet</p>
+                <p className={styles.mutedText}>No weight entries yet</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -100,28 +104,28 @@ export default function HistoryPage() {
                   return (
                     <div
                       key={entry.id}
-                      className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg"
+                      className={`flex items-center justify-between p-3 rounded-lg ${styles.listItem}`}
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
-                          <span className="text-lg font-semibold text-white">
+                          <span className={`text-lg font-semibold ${styles.text}`}>
                             {fmtWeight(entry.weightKg)}
                           </span>
                           {change !== null && (
                             <span
                               className={`text-sm ${
                                 change < 0
-                                  ? "text-green-400"
+                                  ? styles.successText
                                   : change > 0
-                                  ? "text-red-400"
-                                  : "text-slate-400"
+                                  ? styles.dangerText
+                                  : styles.mutedText
                               }`}
                             >
                               {change > 0 ? "+" : ""}{change < 0 ? "-" : ""}{fmtWeightChange(change)}
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-slate-400">
+                        <div className={`flex items-center gap-2 text-sm ${styles.mutedText}`}>
                           <span>{formatDate(entry.date)}</span>
                           {entry.notes && (
                             <>
@@ -133,7 +137,7 @@ export default function HistoryPage() {
                       </div>
                       <button
                         onClick={() => handleDelete(entry.id)}
-                        className="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                        className={`p-2 ${styles.mutedText} hover:text-red-400 transition-colors`}
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -156,7 +160,7 @@ export default function HistoryPage() {
                 >
                   Previous
                 </Button>
-                <span className="text-sm text-slate-400">
+                <span className={`text-sm ${styles.mutedText}`}>
                   Page {page + 1} of {totalPages}
                 </span>
                 <Button

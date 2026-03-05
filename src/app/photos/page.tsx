@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/utils";
+import { useTheme } from "@/lib/theme-context";
+import { getThemeStyles } from "@/lib/theme-styles";
 import Image from "next/image";
 
 interface Photo {
@@ -24,6 +26,8 @@ const categories = [
 ];
 
 export default function PhotosPage() {
+  const { theme } = useTheme();
+  const styles = getThemeStyles(theme);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -117,8 +121,8 @@ export default function PhotosPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">Progress Photos</h1>
-            <p className="text-slate-400">Track your visual progress</p>
+            <h1 className={`text-2xl font-bold ${styles.heading}`}>Progress Photos</h1>
+            <p className={styles.subtext}>Track your visual progress</p>
           </div>
           <div className="flex gap-2">
             {filteredPhotos.length >= 2 && (
@@ -141,8 +145,8 @@ export default function PhotosPage() {
             onClick={() => setSelectedCategory("all")}
             className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
               selectedCategory === "all"
-                ? "bg-gradient-primary text-white"
-                : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                ? styles.btnPrimary
+                : styles.btnSecondary
             }`}
           >
             All
@@ -153,8 +157,8 @@ export default function PhotosPage() {
               onClick={() => setSelectedCategory(cat.value)}
               className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                 selectedCategory === cat.value
-                  ? "bg-gradient-primary text-white"
-                  : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                  ? styles.btnPrimary
+                  : styles.btnSecondary
               }`}
             >
               {cat.label}
@@ -170,12 +174,12 @@ export default function PhotosPage() {
         ) : filteredPhotos.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className={`w-16 h-16 rounded-full ${styles.listItem} flex items-center justify-center mx-auto mb-4`}>
+                <svg className={`w-8 h-8 ${styles.mutedText}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <p className="text-slate-400 mb-4">No photos yet</p>
+              <p className={`${styles.mutedText} mb-4`}>No photos yet</p>
               <Button onClick={() => setIsModalOpen(true)}>Upload your first photo</Button>
             </CardContent>
           </Card>
@@ -195,7 +199,7 @@ export default function PhotosPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="absolute bottom-0 left-0 right-0 p-3">
                     <p className="text-white text-sm font-medium">{formatDate(photo.date)}</p>
-                    <p className="text-slate-300 text-xs capitalize">{photo.category}</p>
+                    <p className={`${styles.mutedText} text-xs capitalize`}>{photo.category}</p>
                   </div>
                   <button
                     onClick={() => handleDelete(photo.id)}
@@ -215,19 +219,19 @@ export default function PhotosPage() {
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Upload Photo">
           <form onSubmit={handleUpload} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Photo</label>
+              <label className={`block text-sm font-medium ${styles.mutedText} mb-2`}>Photo</label>
               <div
-                className="border-2 border-dashed border-slate-600 rounded-lg p-6 text-center cursor-pointer hover:border-primary-500 transition-colors"
+                className={`border-2 border-dashed ${styles.divider} rounded-lg p-6 text-center cursor-pointer hover:opacity-80 transition-colors`}
                 onClick={() => document.getElementById("photo-input")?.click()}
               >
                 {uploadFile ? (
-                  <p className="text-white">{uploadFile.name}</p>
+                  <p className={styles.text}>{uploadFile.name}</p>
                 ) : (
                   <>
-                    <svg className="w-8 h-8 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className={`w-8 h-8 ${styles.mutedText} mx-auto mb-2`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
-                    <p className="text-slate-400">Click to select a photo</p>
+                    <p className={styles.mutedText}>Click to select a photo</p>
                   </>
                 )}
                 <input
@@ -241,7 +245,7 @@ export default function PhotosPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Category</label>
+              <label className={`block text-sm font-medium ${styles.mutedText} mb-2`}>Category</label>
               <div className="flex gap-2">
                 {categories.map((cat) => (
                   <button
@@ -250,8 +254,8 @@ export default function PhotosPage() {
                     onClick={() => setUploadCategory(cat.value)}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       uploadCategory === cat.value
-                        ? "bg-gradient-primary text-white"
-                        : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                        ? styles.btnPrimary
+                        : styles.btnSecondary
                     }`}
                   >
                     {cat.label}
@@ -282,7 +286,7 @@ export default function PhotosPage() {
         >
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-slate-400 mb-2 text-center">Before</p>
+              <p className={`text-sm ${styles.mutedText} mb-2 text-center`}>Before</p>
               {comparePhotos.before && (
                 <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-slate-700">
                   <Image
@@ -298,7 +302,7 @@ export default function PhotosPage() {
               )}
             </div>
             <div>
-              <p className="text-sm text-slate-400 mb-2 text-center">After</p>
+              <p className={`text-sm ${styles.mutedText} mb-2 text-center`}>After</p>
               {comparePhotos.after && (
                 <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-slate-700">
                   <Image
