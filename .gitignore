@@ -40,3 +40,13 @@ next-env.d.ts
 
 # prisma
 /prisma/migrations
+
+# claude code
+.claude/settings.local.json
+.claude/worktrees/
+.claude/agents/
+.claude/commands/
+.claude/helpers/
+.claude-flow/
+.swarm/
+.mcp.json
