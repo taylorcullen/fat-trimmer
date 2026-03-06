@@ -19,6 +19,7 @@ export interface ThemeStyles {
   dangerText: string;
   divider: string;
   listItem: string;
+  closeHover: string;
   focusRing: string;
 }
 
@@ -41,6 +42,7 @@ const defaultStyles: ThemeStyles = {
   dangerText: "text-[#f87171]",
   divider: "border-[#1e3054]/50",
   listItem: "bg-[#0f1d33]/60",
+  closeHover: "hover:text-white",
   focusRing: "focus:ring-[#3b82f6]",
 };
 
@@ -63,6 +65,7 @@ const v1Styles: ThemeStyles = {
   dangerText: "text-red-400",
   divider: "border-[#f0a500]/20",
   listItem: "bg-[#0b0e1a] border border-[#f0a500]/10",
+  closeHover: "hover:text-white",
   focusRing: "focus:ring-[#f0a500]",
 };
 
@@ -85,28 +88,30 @@ const v2Styles: ThemeStyles = {
   dangerText: "text-rose-400",
   divider: "border-white/[0.06]",
   listItem: "bg-white/[0.03] hover:bg-white/[0.05] transition-colors duration-300",
+  closeHover: "hover:text-white",
   focusRing: "focus:ring-teal-400/50",
 };
 
 const v3Styles: ThemeStyles = {
   card: "bg-transparent rounded-none border-0 shadow-none",
   cardHeader: "pb-6 border-0",
-  cardTitle: "text-[11px] font-light text-white/15 uppercase tracking-[0.3em]",
+  cardTitle: "text-[11px] font-light text-white/35 uppercase tracking-[0.3em]",
   input: "bg-transparent border-0 border-b border-white/[0.04] text-white font-extralight placeholder-white/10 focus:ring-0 focus:border-[#f43f5e] rounded-none text-lg tracking-tight",
-  inputLabel: "text-white/15 text-[11px] tracking-[0.3em] uppercase font-light",
+  inputLabel: "text-white/40 text-[11px] tracking-[0.3em] uppercase font-light",
   btnPrimary: "bg-transparent text-[11px] tracking-[0.3em] uppercase text-[#f43f5e] hover:text-[#f43f5e]/70 transition-colors shadow-none px-0 rounded-none",
   btnSecondary: "bg-transparent text-[11px] tracking-[0.3em] uppercase text-white/20 hover:text-white/40 transition-colors shadow-none px-0 rounded-none",
   modal: "bg-[#09090b] border-white/[0.04] rounded-none",
   modalHeader: "border-white/[0.04]",
   heading: "text-white font-extralight tracking-tight",
-  subtext: "text-white/15 font-light",
+  subtext: "text-white/40 font-light",
   text: "text-white font-light",
-  mutedText: "text-white/15",
+  mutedText: "text-white/35",
   accentText: "text-[#f43f5e]",
   successText: "text-white/40",
   dangerText: "text-[#f43f5e]",
   divider: "border-white/[0.04]",
   listItem: "bg-transparent border-b border-white/[0.04]",
+  closeHover: "hover:text-white",
   focusRing: "focus:ring-0 focus:border-[#f43f5e]",
 };
 
@@ -129,6 +134,7 @@ const v4Styles: ThemeStyles = {
   dangerText: "text-[#e94560] drop-shadow-[0_0_6px_rgba(233,69,96,0.4)]",
   divider: "border-[#533483]/50",
   listItem: "bg-[#16213e]/60 border border-[#533483]/30 hover:border-[#e94560]/30 transition-colors",
+  closeHover: "hover:text-white",
   focusRing: "focus:ring-[#e94560] focus:ring-offset-[#1a1a2e]",
 };
 
@@ -151,18 +157,19 @@ const v5Styles: ThemeStyles = {
   dangerText: "text-[#d4726a]",
   divider: "border-[#3a3630]/60",
   listItem: "bg-[#33302a]/60 rounded-2xl",
+  closeHover: "hover:text-white",
   focusRing: "focus:ring-[#a8c686]",
 };
 
 const v6Styles: ThemeStyles = {
   card: "bg-[#f5f5f0] rounded-none border-2 border-black shadow-[4px_4px_0_0_black]",
-  cardHeader: "p-4 border-b-2 border-black bg-[#ffdb58]",
+  cardHeader: "p-4 border-b-2 border-black bg-white",
   cardTitle: "text-sm font-black text-black uppercase tracking-widest",
   input: "bg-white border-2 border-black text-black placeholder-black/30 focus:ring-0 focus:border-black rounded-none",
   inputLabel: "text-black font-bold",
   btnPrimary: "bg-black hover:bg-[#333] text-white font-black uppercase tracking-wider shadow-[3px_3px_0_0_#ffdb58]",
   btnSecondary: "bg-white hover:bg-[#f0f0e8] text-black border-2 border-black font-bold shadow-[2px_2px_0_0_black]",
-  modal: "bg-[#f5f5f0] border-2 border-black",
+  modal: "bg-[#f5f5f0] border-2 border-black rounded-none shadow-[4px_4px_0_0_black]",
   modalHeader: "border-b-2 border-black bg-[#ffdb58]",
   heading: "text-black",
   subtext: "text-black/50",
@@ -173,6 +180,7 @@ const v6Styles: ThemeStyles = {
   dangerText: "text-[#ff3864]",
   divider: "border-black",
   listItem: "bg-white border-2 border-black",
+  closeHover: "hover:text-black",
   focusRing: "focus:ring-0 focus:border-black",
 };
 

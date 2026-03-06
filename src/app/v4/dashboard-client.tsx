@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId } from "react";
 import { V4Shell } from "@/components/layout/shells/v4-shell";
 import { WeightChart } from "@/components/charts/weight-chart";
 import { formatWeight, getBMICategory, getWeightChange } from "@/lib/utils";
@@ -15,8 +15,6 @@ interface V4DashboardClientProps {
 }
 
 /* Neon-bordered progress bar with animated glow */
-let progressRingCounter = 0;
-
 function NeonProgressRing({
   progress,
   size = 80,
@@ -26,8 +24,9 @@ function NeonProgressRing({
   size?: number;
   strokeWidth?: number;
 }) {
-  const [gradientId] = useState(() => `v4-neon-ring-${++progressRingCounter}`);
-  const [glowId] = useState(() => `v4-neon-glow-${progressRingCounter}`);
+  const id = useId();
+  const gradientId = `v4-neon-ring-${id}`;
+  const glowId = `v4-neon-glow-${id}`;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (Math.min(progress, 100) / 100) * circumference;
@@ -316,11 +315,11 @@ export function V4DashboardClient({ stats, userName }: V4DashboardClientProps) {
 
         {/* Setup Prompts -- warning with neon amber */}
         {(!stats.heightCm || !stats.goalWeight) && (
-          <div className="bg-[#16213e]/80 border-2 border-[#f0a500]/40 rounded-md p-5 shadow-[0_0_16px_rgba(240,165,0,0.1)]">
+          <div className="bg-[#16213e]/80 border-2 border-[#533483]/40 rounded-md p-5 shadow-[0_0_16px_rgba(83,52,131,0.1)]">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-md bg-[#f0a500]/20 border border-[#f0a500]/40 flex items-center justify-center flex-shrink-0 shadow-[0_0_8px_rgba(240,165,0,0.2)]">
+              <div className="w-8 h-8 rounded-md bg-[#e94560]/20 border border-[#533483]/40 flex items-center justify-center flex-shrink-0 shadow-[0_0_8px_rgba(233,69,96,0.2)]">
                 <svg
-                  className="w-4 h-4 text-[#f0a500]"
+                  className="w-4 h-4 text-[#e94560]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

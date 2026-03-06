@@ -53,6 +53,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (newTheme: ThemeVersion) => {
     setThemeState(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("fat-trimmer-theme", newTheme);
     const isDashboard = Object.values(DASHBOARD_PATHS).includes(pathname);
     if (isDashboard) {
@@ -70,6 +71,3 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   return useContext(ThemeContext);
 }
-
-export { getThemeStyles } from "./theme-styles";
-export type { ThemeStyles } from "./theme-styles";

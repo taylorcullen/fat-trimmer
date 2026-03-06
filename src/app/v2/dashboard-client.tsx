@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId } from "react";
 import { V2Shell } from "@/components/layout/shells/v2-shell";
 import { WeightChart } from "@/components/charts/weight-chart";
 import { formatWeight, getBMICategory, getWeightChange } from "@/lib/utils";
@@ -14,11 +14,10 @@ interface V2DashboardClientProps {
   userName: string;
 }
 
-let progressRingCounter = 0;
-
 function ProgressRing({ progress, size = 80, strokeWidth = 6 }: { progress: number; size?: number; strokeWidth?: number }) {
-  const [gradientId] = useState(() => `progress-ring-gradient-${++progressRingCounter}`);
-  const [glowId] = useState(() => `progress-ring-glow-${progressRingCounter}`);
+  const id = useId();
+  const gradientId = `progress-ring-gradient-${id}`;
+  const glowId = `progress-ring-glow-${id}`;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (Math.min(progress, 100) / 100) * circumference;

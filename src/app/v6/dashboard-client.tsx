@@ -68,7 +68,7 @@ export function V6DashboardClient({ stats, userName }: V6DashboardClientProps) {
               {stats.bmi ? formatWeight(stats.bmi) : "--"}
             </p>
             {bmiCategory && (
-              <p className="text-xs font-black mt-2 uppercase text-black/60">{bmiCategory.label}</p>
+              <p className={`text-xs font-black mt-2 uppercase ${bmiCategory.lightColor}`}>{bmiCategory.label}</p>
             )}
           </div>
 

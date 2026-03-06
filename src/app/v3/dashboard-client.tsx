@@ -27,12 +27,12 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
       <div className="space-y-20">
         {/* Version switcher — flush right, near-invisible */}
         <div className="flex justify-end">
-          <VersionSelector className="bg-transparent border-0 text-white/10 rounded-none text-xs tracking-widest" />
+          <VersionSelector className="bg-transparent border-0 text-white/25 rounded-none text-xs tracking-widest" />
         </div>
 
         {/* Hero weight — massive editorial typography */}
         <section>
-          <p className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">
+          <p className="text-white/35 text-[11px] tracking-[0.3em] uppercase font-light">
             current weight
           </p>
           <p className="text-[clamp(4rem,12vw,8rem)] font-extralight text-white leading-none mt-3 tracking-tighter">
@@ -44,7 +44,7 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
             }`}>
               {weightChange.isLoss ? "\u2212" : "+"}
               {fmtWeightChange(weightChange.value)}
-              <span className="text-white/15 ml-2">from last entry</span>
+              <span className="text-white/35 ml-2">from last entry</span>
             </p>
           )}
         </section>
@@ -54,13 +54,13 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
           <div className="h-px bg-white/[0.04]" />
 
           <div className="flex justify-between items-baseline py-6">
-            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">bmi</span>
+            <span className="text-white/35 text-[11px] tracking-[0.3em] uppercase font-light">bmi</span>
             <div className="text-right flex items-baseline gap-4">
               <span className="text-2xl font-extralight text-white tracking-tight">
                 {stats.bmi ? formatWeight(stats.bmi) : "\u2014"}
               </span>
               {bmiCategory && (
-                <span className="text-[11px] tracking-[0.2em] uppercase text-white/25">{bmiCategory.label}</span>
+                <span className="text-[11px] tracking-[0.2em] uppercase text-white/35">{bmiCategory.label}</span>
               )}
             </div>
           </div>
@@ -68,7 +68,7 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
           <div className="h-px bg-white/[0.04]" />
 
           <div className="flex justify-between items-baseline py-6">
-            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">goal</span>
+            <span className="text-white/35 text-[11px] tracking-[0.3em] uppercase font-light">goal</span>
             <div className="text-right flex items-baseline gap-4">
               <span className="text-2xl font-extralight text-white tracking-tight">
                 {stats.goalWeight ? fmtWeight(stats.goalWeight) : "\u2014"}
@@ -84,9 +84,9 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
           <div className="h-px bg-white/[0.04]" />
 
           <div className="flex justify-between items-baseline py-6">
-            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">total lost</span>
+            <span className="text-white/35 text-[11px] tracking-[0.3em] uppercase font-light">total lost</span>
             <span className={`text-2xl font-extralight tracking-tight ${
-              stats.totalLost > 0 ? "text-white" : "text-white/20"
+              stats.totalLost > 0 ? "text-white" : "text-white/35"
             }`}>
               {stats.totalLost > 0 ? fmtWeightChange(stats.totalLost) : "\u2014"}
             </span>
@@ -95,7 +95,7 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
           <div className="h-px bg-white/[0.04]" />
 
           <div className="flex justify-between items-baseline py-6">
-            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">started at</span>
+            <span className="text-white/35 text-[11px] tracking-[0.3em] uppercase font-light">started at</span>
             <span className="text-2xl font-extralight text-white tracking-tight">
               {stats.startWeight ? fmtWeight(stats.startWeight) : "\u2014"}
             </span>
@@ -108,10 +108,10 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
         {stats.goalWeight && stats.currentWeight && (
           <section>
             <div className="flex justify-between items-baseline mb-6">
-              <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">progress</span>
-              <span className="text-[11px] tracking-[0.15em] text-white/20 font-light">
+              <span className="text-white/35 text-[11px] tracking-[0.3em] uppercase font-light">progress</span>
+              <span className="text-[11px] tracking-[0.15em] text-white/35 font-light">
                 {fmtWeight(stats.currentWeight)}
-                <span className="text-white/10 mx-2">/</span>
+                <span className="text-white/25 mx-2">/</span>
                 {fmtWeight(stats.goalWeight)}
               </span>
             </div>
@@ -127,7 +127,7 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
         {/* Trend chart — minimal label above */}
         <section>
           <div className="flex items-baseline justify-between mb-8">
-            <span className="text-white/15 text-[11px] tracking-[0.3em] uppercase font-light">trend</span>
+            <span className="text-white/35 text-[11px] tracking-[0.3em] uppercase font-light">trend</span>
             <Link
               href="/history"
               className="text-[11px] tracking-[0.2em] uppercase text-[#f43f5e] hover:text-[#f43f5e]/70 transition-colors"
@@ -153,7 +153,7 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
           </Link>
           <Link
             href="/photos"
-            className="text-[11px] tracking-[0.3em] uppercase text-white/20 hover:text-white/40 transition-colors"
+            className="text-[11px] tracking-[0.3em] uppercase text-white/35 hover:text-white/50 transition-colors"
           >
             progress photo
           </Link>
@@ -163,7 +163,7 @@ export function V3DashboardClient({ stats, userName }: V3DashboardClientProps) {
         {(!stats.heightCm || !stats.goalWeight) && (
           <section className="pt-10">
             <div className="h-px bg-white/[0.04] mb-10" />
-            <p className="text-white/15 text-[13px] font-light leading-relaxed">
+            <p className="text-white/35 text-[13px] font-light leading-relaxed">
               {!stats.heightCm && (
                 <>
                   Add your height in{" "}

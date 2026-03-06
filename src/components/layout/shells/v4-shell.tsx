@@ -18,7 +18,7 @@ export function V4Shell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-[#1a1a2e] relative">
       {/* CRT Scanline overlay */}
       <div
-        className="pointer-events-none fixed inset-0 z-50"
+        className="pointer-events-none fixed inset-0 z-30"
         style={{
           background:
             "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)",

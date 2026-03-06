@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-context";
-import { navItems as baseNavItems, getNavItemsWithIcons } from "@/lib/nav-items";
+import { navItems as baseNavItems, getNavItemsWithIcons, DASHBOARD_ROUTES } from "@/lib/nav-items";
 
 const sidebarNavItems = getNavItemsWithIcons(baseNavItems.filter((item) => item.href !== "/settings"));
 const settingsNavItem = getNavItemsWithIcons(baseNavItems.filter((item) => item.href === "/settings"))[0];
@@ -21,7 +21,7 @@ export function MobileNav() {
         {mobileNavItems.map((item) => {
           const href = item.isDashboard ? dashboardPath : item.href;
           const isActive = item.isDashboard
-            ? ["/dashboard", "/v1", "/v2", "/v3"].includes(pathname)
+            ? DASHBOARD_ROUTES.includes(pathname)
             : pathname === href;
           return (
             <Link
@@ -60,7 +60,7 @@ export function Sidebar() {
         {sidebarNavItems.map((item) => {
           const href = item.isDashboard ? dashboardPath : item.href;
           const isActive = item.isDashboard
-            ? ["/dashboard", "/v1", "/v2", "/v3"].includes(pathname)
+            ? DASHBOARD_ROUTES.includes(pathname)
             : pathname === href;
           return (
             <Link
