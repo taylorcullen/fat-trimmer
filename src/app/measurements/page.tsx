@@ -10,6 +10,8 @@ import { formatDate } from "@/lib/utils";
 import { useUnits } from "@/lib/unit-context";
 import { cmToInches, inchesToCm, measurementUnit, formatMeasurementChangeDisplay } from "@/lib/units";
 import { MeasurementGuide } from "@/components/ui/measurement-guides";
+import { useTheme } from "@/lib/theme-context";
+import { getThemeStyles } from "@/lib/theme-styles";
 
 interface Measurement {
   id: string;
@@ -44,6 +46,9 @@ export default function MeasurementsPage() {
     thighCm: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { theme } = useTheme();
+  const styles = getThemeStyles(theme);
 
   const fetchMeasurements = async () => {
     try {
@@ -131,8 +136,8 @@ export default function MeasurementsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">Body Measurements</h1>
-            <p className="text-slate-400">Track your body measurements over time</p>
+            <h1 className={`text-2xl font-bold ${styles.heading}`}>Body Measurements</h1>
+            <p className={styles.subtext}>Track your body measurements over time</p>
           </div>
           <Button onClick={() => setIsModalOpen(true)}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,14 +158,14 @@ export default function MeasurementsPage() {
               return (
                 <Card key={field.key}>
                   <CardContent className="pt-4 text-center">
-                    <p className="text-sm text-slate-400">{field.label}</p>
-                    <p className="text-2xl font-bold text-white">
+                    <p className={`text-sm ${styles.subtext}`}>{field.label}</p>
+                    <p className={`text-2xl font-bold ${styles.text}`}>
                       {value ? formatMeasurement(value) : "--"}
                     </p>
                     {change !== null && (
                       <p
                         className={`text-sm ${
-                          change < 0 ? "text-green-400" : change > 0 ? "text-red-400" : "text-slate-400"
+                          change < 0 ? styles.successText : change > 0 ? styles.dangerText : styles.subtext
                         }`}
                       >
                         {change > 0 ? "+" : ""}
@@ -186,17 +191,17 @@ export default function MeasurementsPage() {
               </div>
             ) : measurements.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-slate-400 mb-4">No measurements yet</p>
+                <p className={`${styles.subtext} mb-4`}>No measurements yet</p>
                 <Button onClick={() => setIsModalOpen(true)}>Add your first measurement</Button>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-700">
-                      <th className="text-left py-2 px-2 text-sm text-slate-400">Date</th>
+                    <tr className={`border-b ${styles.divider}`}>
+                      <th className={`text-left py-2 px-2 text-sm ${styles.subtext}`}>Date</th>
                       {measurementFields.map((field) => (
-                        <th key={field.key} className="text-right py-2 px-2 text-sm text-slate-400">
+                        <th key={field.key} className={`text-right py-2 px-2 text-sm ${styles.subtext}`}>
                           {field.label}
                         </th>
                       ))}
@@ -205,17 +210,17 @@ export default function MeasurementsPage() {
                   </thead>
                   <tbody>
                     {measurements.map((m) => (
-                      <tr key={m.id} className="border-b border-slate-700/50">
-                        <td className="py-3 px-2 text-sm text-white">{formatDate(m.date)}</td>
+                      <tr key={m.id} className={`border-b ${styles.divider}`}>
+                        <td className={`py-3 px-2 text-sm ${styles.text}`}>{formatDate(m.date)}</td>
                         {measurementFields.map((field) => (
-                          <td key={field.key} className="py-3 px-2 text-sm text-right text-slate-300">
+                          <td key={field.key} className={`py-3 px-2 text-sm text-right ${styles.mutedText}`}>
                             {m[field.key] ? formatMeasurement(m[field.key]!) : "-"}
                           </td>
                         ))}
                         <td className="py-3 px-2">
                           <button
                             onClick={() => handleDelete(m.id)}
-                            className="p-1 text-slate-400 hover:text-red-400 transition-colors"
+                            className={`p-1 ${styles.subtext} hover:text-red-400 transition-colors`}
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -246,7 +251,7 @@ export default function MeasurementsPage() {
               {measurementFields.map((field) => (
                 <div
                   key={field.key}
-                  className="flex items-center gap-4 p-3 bg-slate-700/30 rounded-lg"
+                  className={`flex items-center gap-4 p-3 ${styles.listItem} rounded-lg`}
                 >
                   <div className="w-20 shrink-0">
                     <MeasurementGuide field={field.key} />

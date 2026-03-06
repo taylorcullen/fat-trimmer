@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useUnits } from "@/lib/unit-context";
+import { useTheme } from "@/lib/theme-context";
+import { getThemeStyles } from "@/lib/theme-styles";
 import {
   type UnitSystem,
   cmToFeetInches,
@@ -27,6 +29,8 @@ interface UserData {
 export default function SettingsPage() {
   const { data: session } = useSession();
   const { setUnitSystem: setContextUnit } = useUnits();
+  const { theme } = useTheme();
+  const styles = getThemeStyles(theme);
   const [user, setUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -137,8 +141,8 @@ export default function SettingsPage() {
     <AppLayout>
       <div className="max-w-lg mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Settings</h1>
-          <p className="text-slate-400">Manage your profile and preferences</p>
+          <h1 className={`text-2xl font-bold ${styles.heading}`}>Settings</h1>
+          <p className={styles.subtext}>Manage your profile and preferences</p>
         </div>
 
         {/* Profile Card */}
@@ -158,8 +162,8 @@ export default function SettingsPage() {
                 />
               )}
               <div>
-                <p className="text-lg font-medium text-white">{session?.user?.name}</p>
-                <p className="text-sm text-slate-400">{session?.user?.email}</p>
+                <p className={`text-lg font-medium ${styles.text}`}>{session?.user?.name}</p>
+                <p className={`text-sm ${styles.mutedText}`}>{session?.user?.email}</p>
               </div>
             </div>
           </CardContent>
@@ -177,8 +181,8 @@ export default function SettingsPage() {
                 onClick={() => handleUnitToggle("metric")}
                 className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                   unitSystem === "metric"
-                    ? "bg-primary-500 text-white"
-                    : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                    ? styles.btnPrimary
+                    : styles.btnSecondary
                 }`}
               >
                 Metric (kg, cm)
@@ -188,8 +192,8 @@ export default function SettingsPage() {
                 onClick={() => handleUnitToggle("imperial")}
                 className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                   unitSystem === "imperial"
-                    ? "bg-primary-500 text-white"
-                    : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                    ? styles.btnPrimary
+                    : styles.btnSecondary
                 }`}
               >
                 Imperial (st/lb, ft/in)
@@ -217,7 +221,7 @@ export default function SettingsPage() {
                 />
               ) : (
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className={`block text-sm font-medium ${styles.mutedText} mb-1`}>
                     Height
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -244,7 +248,7 @@ export default function SettingsPage() {
               )}
 
               {success && (
-                <div className="flex items-center gap-2 text-green-400 text-sm">
+                <div className={`flex items-center gap-2 ${styles.successText} text-sm`}>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -261,25 +265,25 @@ export default function SettingsPage() {
 
         {/* BMI Info */}
         {user?.heightCm && (
-          <Card className="bg-slate-800/50">
+          <Card>
             <CardContent className="pt-4">
-              <h3 className="font-medium text-white mb-2">BMI Reference</h3>
-              <div className="text-sm text-slate-400 space-y-1">
+              <h3 className={`font-medium ${styles.text} mb-2`}>BMI Reference</h3>
+              <div className={`text-sm ${styles.mutedText} space-y-1`}>
                 <p>Your height: {formatHeightDisplay(user.heightCm, unitSystem)}</p>
                 <div className="grid grid-cols-2 gap-2 mt-2">
-                  <div className="p-2 bg-slate-700/50 rounded">
+                  <div className={`p-2 ${styles.listItem} rounded`}>
                     <p className="text-blue-400">Underweight</p>
                     <p>&lt; 18.5</p>
                   </div>
-                  <div className="p-2 bg-slate-700/50 rounded">
+                  <div className={`p-2 ${styles.listItem} rounded`}>
                     <p className="text-green-400">Normal</p>
                     <p>18.5 - 24.9</p>
                   </div>
-                  <div className="p-2 bg-slate-700/50 rounded">
+                  <div className={`p-2 ${styles.listItem} rounded`}>
                     <p className="text-yellow-400">Overweight</p>
                     <p>25 - 29.9</p>
                   </div>
-                  <div className="p-2 bg-slate-700/50 rounded">
+                  <div className={`p-2 ${styles.listItem} rounded`}>
                     <p className="text-red-400">Obese</p>
                     <p>&gt;= 30</p>
                   </div>
@@ -295,7 +299,7 @@ export default function SettingsPage() {
             <CardTitle className="text-red-400">Account</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-400 mb-4">
+            <p className={`text-sm ${styles.mutedText} mb-4`}>
               Sign out of your account on this device.
             </p>
             <Button variant="danger" onClick={() => signOut({ callbackUrl: "/login" })}>

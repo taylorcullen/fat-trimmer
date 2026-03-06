@@ -5,10 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WeightForm } from "@/components/forms/weight-form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTheme } from "@/lib/theme-context";
+import { getThemeStyles } from "@/lib/theme-styles";
 
 export default function LogPage() {
   const router = useRouter();
   const [success, setSuccess] = useState(false);
+  const { theme, dashboardPath } = useTheme();
+  const styles = getThemeStyles(theme);
 
   const handleSubmit = async (data: { weightKg: number; date: string; notes: string }) => {
     const response = await fetch("/api/weights", {
@@ -23,7 +27,7 @@ export default function LogPage() {
 
     setSuccess(true);
     setTimeout(() => {
-      router.push("/dashboard");
+      router.push(dashboardPath);
       router.refresh();
     }, 1500);
   };
@@ -32,8 +36,8 @@ export default function LogPage() {
     <AppLayout>
       <div className="max-w-lg mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Log Weight</h1>
-          <p className="text-slate-400">Record your daily weight</p>
+          <h1 className={`text-2xl font-bold ${styles.heading}`}>Log Weight</h1>
+          <p className={styles.subtext}>Record your daily weight</p>
         </div>
 
         <Card>
@@ -48,8 +52,8 @@ export default function LogPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="text-lg font-medium text-white">Weight logged!</p>
-                <p className="text-slate-400">Redirecting to dashboard...</p>
+                <p className={`text-lg font-medium ${styles.text}`}>Weight logged!</p>
+                <p className={styles.mutedText}>Redirecting to dashboard...</p>
               </div>
             ) : (
               <WeightForm onSubmit={handleSubmit} />
@@ -57,10 +61,10 @@ export default function LogPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-800/50">
+        <Card className={styles.listItem}>
           <CardContent className="pt-4">
-            <h3 className="font-medium text-white mb-2">Tips for accurate tracking</h3>
-            <ul className="text-sm text-slate-400 space-y-1">
+            <h3 className={`font-medium ${styles.text} mb-2`}>Tips for accurate tracking</h3>
+            <ul className={`text-sm ${styles.mutedText} space-y-1`}>
               <li>- Weigh yourself at the same time each day</li>
               <li>- Morning, after using the bathroom, is ideal</li>
               <li>- Wear similar clothing or none</li>

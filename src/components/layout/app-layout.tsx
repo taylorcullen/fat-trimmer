@@ -4,6 +4,13 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { MobileNav, Sidebar } from "./navigation";
+import { useTheme } from "@/lib/theme-context";
+import { V1Shell } from "./shells/v1-shell";
+import { V2Shell } from "./shells/v2-shell";
+import { V3Shell } from "./shells/v3-shell";
+import { V4Shell } from "./shells/v4-shell";
+import { V5Shell } from "./shells/v5-shell";
+import { V6Shell } from "./shells/v6-shell";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,6 +21,7 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -32,6 +40,13 @@ export function AppLayout({ children }: AppLayoutProps) {
   if (!session) {
     return null;
   }
+
+  if (theme === "v1") return <V1Shell>{children}</V1Shell>;
+  if (theme === "v2") return <V2Shell>{children}</V2Shell>;
+  if (theme === "v3") return <V3Shell>{children}</V3Shell>;
+  if (theme === "v4") return <V4Shell>{children}</V4Shell>;
+  if (theme === "v5") return <V5Shell>{children}</V5Shell>;
+  if (theme === "v6") return <V6Shell>{children}</V6Shell>;
 
   return (
     <div className="min-h-screen bg-slate-900">
