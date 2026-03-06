@@ -42,6 +42,7 @@ next-env.d.ts
 /prisma/migrations
 
 # claude code
+.claude/settings.json
 .claude/settings.local.json
 .claude/worktrees/
 .claude/agents/
